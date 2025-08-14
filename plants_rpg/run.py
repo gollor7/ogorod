@@ -6,6 +6,8 @@ from aiogram import Bot, Dispatcher
 from config import TOKEN
 from handlers import router
 
+from database import init_db
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('aiogram')
@@ -21,6 +23,7 @@ async def start():
 
 if __name__ == "__main__":
     try:
+        init_db()
         asyncio.run(start())
     except KeyboardInterrupt:
         print("Exit")
