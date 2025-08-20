@@ -20,7 +20,10 @@ def init_db():
             fruits REAL,
             day INTEGER,
             day_humidity INTEGER,
-            day_temperature INTEGER
+            day_temperature INTEGER,
+            fertilizer_baff TEXT,
+            toxic_time TEXT,
+            a_hum INTEGER
         )
     """)
     conn.commit()
@@ -32,9 +35,9 @@ def add_player(user_id: int):
     size_cell = np.array([[10,10,10],[10,10,10],[10,10,10]])
     cursor.execute("""
         INSERT OR REPLACE INTO players 
-        (user_id, humidity, temperature, cell_fruits, size_cell, fruits, day, day_humidity, day_temperature)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (user_id, 45, 19, 10, json.dumps(size_cell.tolist()), 0, 1, 0, 0))
+        (user_id, humidity, temperature, cell_fruits, size_cell, fruits, day, day_humidity, day_temperature, fertilizer_baff, toxic_time, a_hum)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (user_id, 45, 19, 10, json.dumps(size_cell.tolist()), 0, 1, 0, 0, "standart", 0, 0))
     conn.commit()
     conn.close()
 
@@ -54,7 +57,10 @@ def get_player(user_id: int):
             "fruits": row[5],
             "day": row[6],
             "day_humidity": row[7],
-            "day_temperature": row[8]
+            "day_temperature": row[8],
+            "fertilizer_baff": row[9],
+            "toxic_time": row[10],
+            "a_hum": row[11]
         }
         return user_data
     return None
