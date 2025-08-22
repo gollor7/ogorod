@@ -23,7 +23,11 @@ def init_db():
             day_temperature INTEGER,
             fertilizer_baff TEXT,
             toxic_time TEXT,
-            a_hum INTEGER
+            a_hum INTEGER,
+            greenhouse_counter INTEGER,
+            min_need_temperature INTEGER,
+            minus_hum INTEGER,
+            goods_details TEXT
         )
     """)
     conn.commit()
@@ -33,11 +37,17 @@ def add_player(user_id: int):
     conn = get_conn()
     cursor = conn.cursor()
     size_cell = np.array([[10,10,10],[10,10,10],[10,10,10]])
+    goods_details = {
+        "Тканина: 80": "trade_greenhouse_fabric",
+        "Вентиляція: 100": "trade_greenhouse_ventilation",
+        "Деревина: 90": "trade_greenhouse_wood"
+    }
     cursor.execute("""
         INSERT OR REPLACE INTO players 
-        (user_id, humidity, temperature, cell_fruits, size_cell, fruits, day, day_humidity, day_temperature, fertilizer_baff, toxic_time, a_hum)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (user_id, 45, 19, 10, json.dumps(size_cell.tolist()), 0, 1, 0, 0, "standart", 0, 0))
+        (user_id, humidity, temperature, cell_fruits, size_cell, fruits, day, day_humidity, day_temperature, fertilizer_baff, toxic_time, a_hum, 
+        greenhouse_counter, min_need_temperature, minus_hum, goods_details)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (user_id, 45, 19, 10, json.dumps(size_cell.tolist()), 0, 1, 0, 0, "standart", 0, 0, 0, 8, 10, json.dumps(goods_details)))
     conn.commit()
     conn.close()
 
@@ -60,7 +70,11 @@ def get_player(user_id: int):
             "day_temperature": row[8],
             "fertilizer_baff": row[9],
             "toxic_time": row[10],
-            "a_hum": row[11]
+            "a_hum": row[11],
+            "greenhouse_counter": row[12],
+            "min_need_temperature": row[13],
+            "minus_hum": row[14],
+            'goods_details': json.loads(row[15]) if row[15] else {}
         }
         return user_data
     return None
@@ -71,7 +85,9 @@ def update_player(user_id: int, **kwargs):
     fields = []
     values = []
     for k, v in kwargs.items():
-        if k == "size_cell":
+        if isinstance(v, (dict, list)):
+            v = json.dumps(v)
+        elif isinstance(v, np.ndarray):
             v = json.dumps(v.tolist())
         fields.append(f"{k} = ?")
         values.append(v)

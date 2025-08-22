@@ -14,3 +14,5 @@ next_day = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='Наступний день', callback_data='next_day')]
 ])
 
+
+
