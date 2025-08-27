@@ -27,7 +27,11 @@ def init_db():
             greenhouse_counter INTEGER,
             min_need_temperature INTEGER,
             minus_hum INTEGER,
-            goods_details TEXT
+            goods_details TEXT,
+            fire_time INTEGER,
+            fertility_time INTEGER,
+            god_blessing_time INTEGER,
+            late_blight_time INTEGER
         )
     """)
     conn.commit()
@@ -45,9 +49,9 @@ def add_player(user_id: int):
     cursor.execute("""
         INSERT OR REPLACE INTO players 
         (user_id, humidity, temperature, cell_fruits, size_cell, fruits, day, day_humidity, day_temperature, fertilizer_baff, toxic_time, a_hum, 
-        greenhouse_counter, min_need_temperature, minus_hum, goods_details)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (user_id, 45, 19, 10, json.dumps(size_cell.tolist()), 0, 1, 0, 0, "standart", 0, 0, 0, 8, 10, json.dumps(goods_details)))
+        greenhouse_counter, min_need_temperature, minus_hum, goods_details, fire_time, fertility_time, god_blessing_time, late_blight_time)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (user_id, 45, 19, 10, json.dumps(size_cell.tolist()), 0, 1, 0, 0, "standart", 0, 0, 0, 8, 10, json.dumps(goods_details), 0, 0, 0, 0))
     conn.commit()
     conn.close()
 
@@ -74,7 +78,11 @@ def get_player(user_id: int):
             "greenhouse_counter": row[12],
             "min_need_temperature": row[13],
             "minus_hum": row[14],
-            'goods_details': json.loads(row[15]) if row[15] else {}
+            'goods_details': json.loads(row[15]) if row[15] else {},
+            'fire_time': row[16],
+            'fertility_time': row[17],
+            'god_blessing_time': row[18],
+            'late_blight_time': row[19]
         }
         return user_data
     return None
